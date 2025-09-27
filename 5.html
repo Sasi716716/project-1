@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hand Looms - Project</title>
+  <link rel="stylesheet" href="5.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffffff;
+    }
+
+    .product-img {
+      cursor: pointer;
+      transition: 0.3s;
+      border-radius: 5px;
+    }
+
+    .product-img:hover {
+      transform: scale(1.05);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      padding-top: 100px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      width: 50%;
+      border-radius: 8px;
+      text-align: center;
+    }
+
+    .close-btn {
+      float: right;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .product-grid {
+      text-align: center;
+    }
+
+    .product-card {
+      display: inline-block;
+      margin: 15px;
+      text-align: center;
+      width: 220px;
+      vertical-align: top;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 10px;
+      background-color: #fff;
+    }
+
+    .product-info p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    .price-tag {
+      font-size: 16px;
+      color: green;
+      font-weight: bold;
+    }
+
+    .navigation, .category-nav, footer {
+      text-align: center;
+    }
+
+    .footer-links a {
+      cursor: pointer;
+      margin: 0 10px;
+    }
+
+    .info-section {
+      display: none;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-top: 1px solid #ccc;
+    }
+
+    .btn-scroll {
+      border: none;
+      background: none;
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .add-to-cart, .buy-now {
+      background-color: #ff9900;
+      border: none;
+      padding: 8px 12px;
+      margin-top: 8px;
+      color: white;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      animation: blink 1.5s infinite;
+      display: block;
+      width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .buy-now {
+      background-color: #28a745;
+    }
+
+    .add-to-cart:hover {
+      background-color: #e68a00;
+    }
+
+    .buy-now:hover {
+      background-color: #218838;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+  </style>
+
+</head>
+<body>
+
+  <h1 style="text-align: center;">Handlooms</h1>
+  <div style="text-align:center;">
+    <img src="https://static.vecteezy.com/system/resources/previews/040/359/877/non_2x/saree-logo-free-vector.jpg" height="90" width="100" alt="Logo">
+  </div>
+
+  <div class="navigation" style="text-align:right; margin: 10px;">
+    <button onclick="window.location.href='login.html'">Login</button>
+    <button onclick="window.location.href='cart.html'">Cart</button>
+  </div>
+
+  <div class="navigation">
+    <form action="search.html">
+      <input type="search" placeholder="Enter...">
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
+  <marquee>Expire coming soon - 60% OFF! Buy now</marquee>
+
+  <div class="category-nav">
+    <button onclick="scrollToSection('Men')">Men</button>
+    <button onclick="scrollToSection('women')">Women</button>
+    <button onclick="scrollToSection('kids')">Kids</button>
+  </div>
+
+
+  <!--Women items-->
+  <h2 id="women" style="text-align:center;"><u>Womens</u></h2>
+  <marquee>Sarees 50% OFF Buy Now</marquee>
+  <div class="product-card" style="text-align:center;">
+      <img src="https://th.bing.com/th/id/R.561c38b08effd1dd858e280fe96d8a8d?rik=KZz3UdLtSyDXnQ&riu=http%3a%2f%2ftamarindweddings.com%2fblog%2fwp-content%2fuploads%2f2016%2f02%2f5-112.jpg&ehk=VZRryA1DEqH3%2fX8DJdubv2VXcs739gxrMaWsWjoJ6Nw%3d&risl=&pid=ImgRaw&r=0" class="product-img" alt="Saree" height="200" width="200"
+           onclick="openModal('Saree', 'Banars', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Banaras</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+  </div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://4.bp.blogspot.com/-O_BMNLgWPFI/Ul_YrfPqwnI/AAAAAAAABLQ/SQA1rZxwOeE/s1600/JKS7140.jpg" class="product-img" alt="Saree" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img class="_53J4C- utBuJY" alt="" src="https://rukminim2.flixcart.com/image/832/832/xif0q/sari/5/1/n/free-uni-diamond-queen-5054-feminista-unstitched-original-imaha9unqacvwecn.jpeg?q=70&amp;crop=false" fetchpriority="high" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://www.vastranand.in/cdn/shop/files/4_e693d171-19f2-4c65-9bff-eb8ffd847745.jpg?v=1743078788&width=1000" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://www.vastranand.in/cdn/shop/files/4_e693d171-19f2-4c65-9bff-eb8ffd847745.jpg?v=1743078788&width=1000" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img class="_53J4C- utBuJY" alt="" src="https://rukminim2.flixcart.com/image/832/832/xif0q/sari/5/1/n/free-uni-diamond-queen-5054-feminista-unstitched-original-imaha9unqacvwecn.jpeg?q=70&amp;crop=false" fetchpriority="high" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://4.bp.blogspot.com/-O_BMNLgWPFI/Ul_YrfPqwnI/AAAAAAAABLQ/SQA1rZxwOeE/s1600/JKS7140.jpg" class="product-img" alt="Saree" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img class="_53J4C- utBuJY" alt="" src="https://rukminim2.flixcart.com/image/832/832/xif0q/sari/5/1/n/free-uni-diamond-queen-5054-feminista-unstitched-original-imaha9unqacvwecn.jpeg?q=70&amp;crop=false" fetchpriority="high" height="200" width="200"
+           onclick="openModal('Saree', 'kanchi', 5, '₹599', 'Soft and stylish Saree.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> Kanchi</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹1,999</p>
+        <button class="add-to-cart" onclick="addToCart('Saree', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying Saree')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+ 
+
+<!--Kids items-->
+  <h2 id="kids" style="text-align:center;"><u>Kids</u></h2>
+
+  <div class="product-card" style="text-align:center">
+    <marquee>Kids dress Expire coming soon - 40% OFF! Buy now</marquee>
+      <img src="https://ae01.alicdn.com/kf/HTB1mVfxX0fvK1RjSspfq6zzXFXam/Baby-Girls-Dress-Flower-Lace-Hollow-Princess-Costume-Kids-Dresses-for-Girl-Princess-Summer-Girls-Party.jpg" class="product-img" alt="Saree" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+  <div class="product-card" style="text-align:center">
+      <img src="https://ae01.alicdn.com/kf/HTB1YE10k25TBuNjSspmq6yDRVXai/2018-Summer-Girls-Dresses-Flower-Sleeveless-Kids-Dresses-Fashion-Kids-Party-Clothes-Children-Princess-Clothing-Beach.jpg" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+  <div class="product-card" style="text-align:center">
+      <img src="https://ae01.alicdn.com/kf/HTB178G9PVXXXXcPXFXXq6xXFXXXf/Girl-Dress-Children-Kids-Dresses-For-Girls-Birthday-Outfits-Dresses-Girls-Evening-Party-Formal-Wear-Sequins.jpg" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.0DEZKp6tApyTaHIVvs_95wHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://ae01.alicdn.com/kf/HLB1RqrdXULrK1Rjy1zbq6AenFXae/Children-s-Garment-Long-Sleeve-Girl-Kids-Dresses-For-Children-Clothing-Girls-Wedding-Dress-Lace-Princess.jpg" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+<div class="product-card" style="text-align:center">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.0DEZKp6tApyTaHIVvs_95wHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+<div class="product-card" style="text-align:center">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.0DEZKp6tApyTaHIVvs_95wHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://tse4.mm.bing.net/th/id/OIP.0DEZKp6tApyTaHIVvs_95wHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3.jpg" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+
+<!--man items-->
+  <h2 id="Men" style="text-align:center;"><u>Men</u></h2>
+  <marquee>Shirts 50% OFF Buy Now</marquee>
+<div class="product-card" style="text-align:center;">
+      <img src="https://levi.in/cdn/shop/files/acfcbbe1-941b-467d-8ce3-dd2c0ac3e7be1741002461187-Mens-Solid-Slim-Fit-Shirt-1821741002460749-4_26f3a544-f06f-4122-99b6-7790d8f16e6f.jpg?v=1752158905" height="200" width="200"
+        onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/329070493_01_Styleshot.jpg?v=1740574878" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/329070431_01_Style_shot_7adb2482-8bf7-4edc-80ef-64a26662af12.jpg?v=1712742813" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/245770260_01_Styleshot.jpg?v=1736252337" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/245770260_01_Styleshot.jpg?v=1736252337" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/329070493_01_Styleshot.jpg?v=1740574878&width=535" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/329070493_01_Styleshot.jpg?v=1740574878" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+
+
+<div class="product-card" style="text-align:center">
+      <img src="https://levi.in/cdn/shop/files/246560019_01_Styleshot.jpg?v=1749632440" height="200" width="200"
+           onclick="openModal('Kids', 'westren', 5, '₹999', 'Soft and stylish kids.')">
+      <div class="product-info">
+        <p><strong>Brand:</strong> westren</p>
+        <p><strong>Rating:</strong> ⭐ 5 / 5</p>
+        <p class="price-tag">₹999</p>
+        <button class="add-to-cart" onclick="addToCart('kids', '₹1,999')">🛒 Add to Cart</button>
+        <button class="buy-now" onclick="alert('Buying kids')">🛍️ Buy Now</button>
+      </div>
+    </div>
+</div>
+  <!-- Modal -->
+  <div id="productModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal()">&times;</span>
+      <h2 id="productTitle"></h2>
+      <p><strong>Brand:</strong> <span id="productBrand"></span></p>
+      <p><strong>Rating:</strong> <span id="productRating"></span> / 5 ⭐</p>
+      <p class="price-tag"><strong>Price:</strong> <span id="productPrice"></span></p>
+      <p><strong>Description:</strong> <span id="productDescription"></span></p>
+    </div>
+  </div>
+  <br>
+  <hr>
+<video src="https://cdn.shopify.com/videos/c/o/v/32a72c124b3b402990fe96951f0fa8e5.mp4"  height="400" width="1000" muted="" loop="" autoplay="" playsinline="" class="prodsiovideo"></video>
+<image-with-text-item class="image-with-text__content text-container text--left"><h2 class="heading heading--small">
+                      <split-lines>Every detail matters</split-lines>
+                    </h2><hr class="heading-line"><h3 class="heading h3">
+                      <split-lines>made with purpose</split-lines>
+                    </h3><div class="image-with-text__text-wrapper">  
+                      <p class="hidden-phone">At Vastranand, every saree begins with a simple idea—to create something beautiful, wearable, and meaningful. We focus on quality fabrics, elegant finishes, and thoughtful designs that suit every occasion. Whether it's for a celebration or a quiet moment, our sarees are made to make you feel seen, special, and truly yourself.</p>
+                      <p class="hidden-phone">We believe that every saree tells a story. Our offerings include Linen Sarees, Silk Sarees, and Cotton Sarees, cherished for their ease of use, shrink resistance, lightweight feel, and nominal costs. Our expert team employs the latest stitching techniques, ensuring each product is a testament to our commitment to excellence.</p>
+                      <p class="hidden-tablet-and-up">
+                        At Vastranand, we craft sarees that are beautiful, meaningful, and made to be lived in. From soft linens to rich silks and breathable cottons, each piece blends quality, comfort, and timeless design—so you feel confident, seen, and effortlessly yourself.
+                      </p>
+                      
+</div>
+                </image-with-text-item>
+  <!-- Footer -->
+  <footer>
+    <hr>
+    <p>&copy; 2025 Your Company Name. All rights reserved.</p>
+    <p class="footer-links">
+      <a onclick="showSection('about')">About</a> |
+      <a onclick="showSection('services')">Services</a> |
+      <a onclick="showSection('privacy')">Privacy Policy</a> |
+      <a onclick="showSection('contact')">Contact Us</a>
+    </p>
+    <p>Any Order? Contact us via Phone or Email.</p>
+    <p>📞 Mobile: 7729871671</p>
+    <p>📧 Email: sasikumar88868@gmail.com</p>
+  </footer>
+
+  <!-- Info Sections -->
+  <div id="about" class="info-section">
+    <h3>About Hand Looms</h3>
+    <p>We are passionate about preserving the heritage of Indian handlooms. Our platform offers a variety of traditional, handmade clothing that supports local weavers and artisans across the country.</p>
+  </div>
+
+  <div id="services" class="info-section">
+    <h3>Our Services</h3>
+    <p>We provide online shopping for men, women, and kids wear, including sarees, shirts, and custom-made ethnic clothing. Fast delivery, easy returns, and 24/7 customer support are our strengths.</p>
+  </div>
+
+  <div id="privacy" class="info-section">
+    <h3>Privacy Policy</h3>
+    <p>Your data is safe with us. We never share your personal information with third parties. Read our full policy to understand how we protect your data.</p>
+  </div>
+
+  <div id="contact" class="info-section">
+    <h3>Contact Us</h3>
+    <p>If you have any questions, suggestions, or need help, feel free to reach out via phone or email. We're happy to assist you with your shopping experience.</p>
+  </div>
+
+  <!-- JS -->
+  <script>
+    function openModal(title, brand, rating, price, description) {
+      document.getElementById('productTitle').innerText = title;
+      document.getElementById('productBrand').innerText = brand;
+      document.getElementById('productRating').innerText = rating;
+      document.getElementById('productPrice').innerText = price;
+      document.getElementById('productDescription').innerText = description;
+      document.getElementById('productModal').style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('productModal').style.display = 'none';
+    }
+
+    function showSection(sectionId) {
+      const sections = document.querySelectorAll('.info-section');
+      sections.forEach(section => section.style.display = 'none');
+      document.getElementById(sectionId).style.display = 'block';
+      window.scrollTo({
+        top: document.getElementById(sectionId).offsetTop - 20,
+        behavior: 'smooth',
+      });
+    }
+
+    function scrollToSection(id) {
+      const section = document.getElementById(id);
+      section.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    window.onclick = function (event) {
+      const modal = document.getElementById('productModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    };
+
+    function addToCart(name, price) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push({ name, price });
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert(`${name} added to cart!`);
+    }
+  </script>
+</body>
+</html>

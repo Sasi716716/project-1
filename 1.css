@@ -1,0 +1,18 @@
+body{
+    background-color:aqua;
+}
+
+ul{
+    color:red;
+}
+ol{
+    color:blue;
+}
+
+button{
+    color:red;
+    background-color: bisque;
+}
+input{
+    background-color: black;
+}

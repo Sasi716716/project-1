@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teams-Lite — Standalone</title>
+  <style>
+    /* Keep your existing CSS */
+    :root{
+      --bg:#0f1420; --panel:#151b2b; --panel-2:#1b2236; --text:#e6eaf2;
+      --muted:#9aa3b2; --accent:#5b6cff; --accent-2:#874bff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    body{background:linear-gradient(135deg,var(--bg),#33353e 40%); color:var(--text)}
+    #app{display:flex; height:100vh}
+    .sidebar{width:300px;background:var(--panel);padding:16px;border-right:1px solid #22283a;display:flex;flex-direction:column;gap:12px}
+    .brand{font-weight:700}
+    .me label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    .me input{width:100%;padding:10px;border-radius:10px;border:1px solid #263053;background:var(--panel-2);color:var(--text)}
+    .section{display:flex;flex-direction:column;gap:8px}
+    .section-header{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px}
+    .section-header button{background:var(--panel-2);border:1px solid #2a345a;color:var(--text);border-radius:8px;padding:4px 8px;cursor:pointer}
+    .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .item{padding:8px 10px;border-radius:8px;cursor:pointer;color:#c9d2e8}
+    .item:hover{background:#222a44;color:#fff}
+    .item.active{background:#2b3560;color:#fff}
+    .chat{flex:1;display:flex;flex-direction:column}
+    .chat-header{padding:12px 16px;border-bottom:1px solid #22283a;background:var(--panel);display:flex;flex-direction:column}
+    .title{font-weight:600}
+    .typing{height:18px;color:var(--muted);font-size:12px;margin-top:6px}
+    .messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px;background:
+      radial-gradient(1000px 400px at 20% -10%, rgba(91,108,255,.06), transparent 60%),
+      radial-gradient(800px 300px at 100% 0%, rgba(135,75,255,.04), transparent 70%);
+    }
+    .message{display:grid;grid-template-columns:44px 1fr;gap:8px;padding:6px;border-radius:12px;align-items:start}
+    .avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;background:linear-gradient(145deg,var(--accent),var(--accent-2))}
+    .bubble{background:var(--panel-2);padding:8px 12px;border-radius:12px;border:1px solid #2a345a}
+    .header{display:flex;gap:8px;align-items:baseline}
+    .username{font-weight:600}
+    .timestamp{color:var(--muted);font-size:12px}
+    .text{white-space:pre-wrap;line-height:1.35;margin-top:6px}
+    .composer{display:flex;gap:8px;padding:12px;border-top:1px solid #22283a;background:var(--panel)}
+    #input{flex:1;resize:none;padding:12px;border-radius:12px;border:1px solid #2a345a;background:var(--panel-2);color:var(--text);max-height:160px}
+    #send{padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;color:#fff;font-weight:600;cursor:pointer}
+    #send:disabled{opacity:.6;cursor:not-allowed}
+    .small{font-size:13px}
+    .meta{color:var(--muted);font-size:12px}
+    .channel-controls{display:flex;gap:8px;align-items:center}
+    .pill{background:#101424;padding:6px 10px;border-radius:999px;border:1px solid #20283a;color:var(--muted);font-size:13px}
+
+    /* Meeting UI */
+    #meeting {
+      display:none;
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:#0f1420; z-index:1000;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    #meeting video { width: 40%; border-radius:12px; margin:10px; background:#000; }
+    #meeting button { margin-top:15px; padding:10px 16px; border-radius:10px; background:#5b6cff; color:#fff; border:none; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <aside class="sidebar">
+      <div class="brand">Teams-Lite (standalone)</div>
+
+      <div class="me">
+        <label for="username">Display name</label>
+        <input id="username" maxlength="24" />
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <span>Channels</span>
+          <div class="channel-controls">
+            <button id="addChannelBtn" title="Create channel">＋</button>
+          </div>
+        </div>
+        <ul id="channelList" class="list"></ul>
+      </div>
+
+      <div class="section">
+        <div class="section-header"><span>Online</span></div>
+        <ul id="onlineList" class="list small"></ul>
+      </div>
+
+      <!-- Join Meeting Button -->
+      <div class="section">
+        <button id="joinMeetingBtn" style="padding:10px;border-radius:8px;background:#874bff;color:white;border:none;cursor:pointer">Join Meeting</button>
+      </div>
+
+      <div class="section">
+        <div class="meta">Open this file in multiple tabs to see real-time sync. Data is local to your browser.</div>
+      </div>
+    </aside>
+
+    <!-- Chat -->
+    <main class="chat">
+      <header class="chat-header">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div id="channelTitle" class="title">#general</div>
+            <div id="subMeta" class="meta">Lightweight demo — broadcasted to open tabs</div>
+          </div>
+          <div class="pill" id="tabIdPill">Tab</div>
+        </div>
+        <div id="typing" class="typing"></div>
+      </header>
+
+      <section id="messages" class="messages"></section>
+
+      <footer class="composer">
+        <textarea id="input" rows="1" placeholder="Message #general"></textarea>
+        <button id="send">Send</button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Meeting Modal -->
+  <div id="meeting">
+    <video id="localVideo" autoplay playsinline muted></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+    <button id="leaveMeeting">Leave Meeting</button>
+  </div>
+
+  <script>
+    // --- Chat code remains same (your original code here) ---
+
+    // Meeting logic (WebRTC + BroadcastChannel)
+    const meetBtn = document.getElementById("joinMeetingBtn");
+    const meetingEl = document.getElementById("meeting");
+    const leaveBtn = document.getElementById("leaveMeeting");
+    const localVideo = document.getElementById("localVideo");
+    const remoteVideo = document.getElementById("remoteVideo");
+
+    let pc, localStream;
+    const bcMeet = new BroadcastChannel("teams-lite-meet");
+
+    meetBtn.onclick = async () => {
+      meetingEl.style.display = "flex";
+      localStream = await navigator.mediaDevices.getUserMedia({ video:true, audio:true });
+      localVideo.srcObject = localStream;
+
+      pc = new RTCPeerConnection();
+      localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+      pc.ontrack = e => remoteVideo.srcObject = e.streams[0];
+
+      pc.onicecandidate = e => { if (e.candidate) bcMeet.postMessage({candidate:e.candidate}); };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      bcMeet.postMessage({offer});
+    };
+
+    leaveBtn.onclick = () => {
+      meetingEl.style.display = "none";
+      if (pc) pc.close();
+      if (localStream) localStream.getTracks().forEach(t => t.stop());
+    };
+
+    bcMeet.onmessage = async e => {
+      if (e.data.offer && !pc.currentRemoteDescription) {
+        await pc.setRemoteDescription(new RTCSessionDescription(e.data.offer));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        bcMeet.postMessage({answer});
+      } else if (e.data.answer && !pc.currentRemoteDescription) {
+        await pc.setRemoteDescription(new RTCSessionDescription(e.data.answer));
+      } else if (e.data.candidate) {
+        try { await pc.addIceCandidate(new RTCIceCandidate(e.data.candidate)); } catch(err) { console.error(err); }
+      }
+    };
+  </script>
+</body>
+</html>

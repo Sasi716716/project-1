@@ -1,0 +1,47 @@
+<html>
+  <body>
+    <h1 id="demo">Click Me</h1>
+    <button onclick="changetext()">Click Me</button>
+    <script>
+      function changetext(){
+        document.getElementById("demo").innerHTML="<br>Sasi Kumar!"
+      }
+    </script>
+  </body>
+</html>
+
+ <!DOCTYPE html>
+<html>
+<head>
+  <title>JS Example</title>
+</head>
+<body>
+  <h1 id="demo">Hello</h1>
+
+  <!-- Button example -->
+  <button onclick="changeText()">Click Me</button>
+
+  <br><br>
+
+  <!-- Search example -->
+  <input type="text" id="searchBox" placeholder="Type something...">
+  <button onclick="searchNow()">Search</button>
+
+  <p id="result"></p>
+
+  <script>
+    // Function for button
+    function changeText() {
+      document.getElementById("demo").innerHTML = "Sasi Kumar!";
+    }
+
+    // Function for search
+    function searchNow() {
+      let query = document.getElementById("searchBox").value;
+      document.getElementById("result").innerHTML = "You searched for: " + query;
+    }
+  </script>
+</body>
+</html> 
+
+<button onclick="changetext()">click me</button>

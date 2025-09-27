@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Web App + Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: #f0f2f5;
+      text-align: center;
+    }
+    h1 { margin-bottom: 20px; }
+    .btn-container { display: none; gap: 20px; margin-top: 20px; justify-content: center; }
+    button {
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: white;
+      margin: 5px;
+    }
+    #registerBtn { background: linear-gradient(45deg, #6a11cb, #2575fc); }
+    .sign-up { background: linear-gradient(45deg, #ff6b6b, #f06595); }
+    .login { background: linear-gradient(45deg, #1c92d2, #f2fcfe); color: black; }
+    .capture { background: linear-gradient(45deg, #43cea2, #185a9d); }
+    .submit { background: linear-gradient(45deg, #ffb347, #ffcc33); color: black; }
+
+    /* Modal */
+    .modal {
+      display: none; position: fixed; z-index: 10; left: 0; top: 0;
+      width: 100%; height: 100%; background-color: rgba(0,0,0,0.5);
+      justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: white; padding: 20px; border-radius: 10px;
+      width: 350px; text-align: center;
+    }
+    .modal input {
+      width: 90%; padding: 8px; margin: 8px 0;
+      border-radius: 6px; border: 1px solid #ccc;
+    }
+    .close { float: right; cursor: pointer; font-weight: bold; color: #555; }
+
+    /* Camera section */
+    #cameraSection {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    video, canvas {
+      border: 2px solid #333;
+      border-radius: 10px;
+      margin: 10px 0;
+      width: 100%;
+      max-width: 320px;
+      height: auto;
+    }
+
+    /* Dashboard */
+    #dashboard {
+      display: none;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+      background: #f4f6f9;
+    }
+    #dashboard header {
+      background: linear-gradient(45deg, #6a11cb, #2575fc);
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    #dashboard main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .meeting-box {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+    .meeting-box h2 { margin-bottom: 15px; }
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      font-size: 16px;
+    }
+    .join { background: #28a745; }
+    .create { background: #007bff; }
+  </style>
+</head>
+<body>
+  <h1 id="mainTitle">Welcome to Mini Web App</h1>
+  <button id="registerBtn">Register</button>
+
+  <div class="btn-container" id="authButtons">
+    <button class="sign-up" onclick="openModal('signup')">Sign Up</button>
+    <button class="login" onclick="openModal('login')">Login</button>
+  </div>
+
+  <!-- Camera Section -->
+  <div id="cameraSection">
+    <h2>Capture Your Photo</h2>
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <button id="captureBtn" class="capture">📸 Capture</button>
+    <button id="submitBtn" class="submit" style="display:none;">✅ Submit</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <input type="text" id="username" placeholder="Username"><br>
+      <input type="password" id="password" placeholder="Password"><br>
+      <button onclick="submitForm()" style="background-color: #007bff; color:white;">Submit</button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="dashboard">
+    <header>
+      <h1>Meeting Dashboard</h1>
+    </header>
+    <main>
+      <div class="meeting-box">
+        <h2>Welcome to Your Meeting Space 🎥</h2>
+        <p>Select an option below to get started:</p>
+        <button class="btn join" onclick="joinMeeting()">🔗 Join Meeting</button>
+        <button class="btn create" onclick="createMeeting()">➕ Create Meeting</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const registerBtn = document.getElementById('registerBtn');
+    const authButtons = document.getElementById('authButtons');
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const cameraSection = document.getElementById('cameraSection');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const dashboard = document.getElementById('dashboard');
+    const mainTitle = document.getElementById('mainTitle');
+    const context = canvas.getContext('2d');
+    let stream = null;
+    let currentType = "";
+
+    registerBtn.addEventListener('click', () => {
+      registerBtn.style.display = 'none';
+      authButtons.style.display = 'flex';
+    });
+
+    function openModal(type) {
+      currentType = type;
+      modal.style.display = 'flex';
+      modalTitle.textContent = type === 'signup' ? 'Sign Up' : 'Login';
+    }
+
+    function closeModal() {
+      modal.style.display = 'none';
+    }
+
+    function submitForm() {
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
+
+      if (user && pass) {
+        if (currentType === "signup") {
+          closeModal();
+          authButtons.style.display = "none";
+          mainTitle.style.display = "none";
+          cameraSection.style.display = "flex";
+          startCamera();
+        } else {
+          alert("Login Successful!");
+          showDashboard();
+          closeModal();
+        }
+      } else {
+        alert("Please enter Username and Password.");
+      }
+    }
+
+    function startCamera() {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(s => {
+          stream = s;
+          video.srcObject = stream;
+        })
+        .catch(err => {
+          alert("Camera access denied: " + err);
+        });
+    }
+
+    captureBtn.addEventListener('click', () => {
+      canvas.style.display = "block";
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      submitBtn.style.display = "inline-block"; 
+      alert("Photo Captured! Now click Submit.");
+    });
+
+    submitBtn.addEventListener('click', () => {
+      const imageData = canvas.toDataURL("image/png");
+      console.log("Captured Image Data:", imageData);
+      alert("Photo Submitted Successfully!");
+      stopCamera();
+      showDashboard();
+    });
+
+    function showDashboard() {
+      document.body.style.justifyContent = "flex-start";
+      document.body.style.alignItems = "stretch";
+      cameraSection.style.display = "none";
+      authButtons.style.display = "none";
+      registerBtn.style.display = "none";
+      mainTitle.style.display = "none";
+      dashboard.style.display = "flex";
+    }
+
+    function stopCamera() {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    }
+
+    // Open fixed meeting links
+    function joinMeeting() {
+      window.open("https://meet.google.com/abc-defg-hij", "_blank"); // Replace with your meeting invite link
+    }
+
+    function createMeeting() {
+      window.open("https://zoom.us/start/videomeeting", "_blank"); // Replace with your create meeting link
+    }
+
+    window.addEventListener("beforeunload", stopCamera);
+
+    window.onclick = (event) => {
+      if (event.target === modal) closeModal();
+    };
+  </script>
+</body>
+</html>

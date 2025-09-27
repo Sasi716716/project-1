@@ -1,0 +1,23 @@
+<html>
+    <body>
+        <h1 id="demo">conditional:</h1>
+        <script>
+            let marks = 101;
+            let grade = "";  // store grade to show on webpage
+
+            if (marks >= 90) {
+                console.log("Grade A");
+                grade = "Grade A";
+            } else if (marks >= 60) {
+                console.log("Grade B");
+                grade = "Grade B";
+            } else {
+                console.log("Grade C");
+                grade = "Grade C";
+            }
+
+            document.getElementById("demo").innerHTML = "Your Grade: " + grade;
+        </script>
+    </body>
+</html>
+
