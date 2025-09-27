@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teams-Lite Unified</title>
+  <style>
+    /* Shared styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+    }
+    .hidden { display: none; }
+
+    /* Landing Page */
+    .container {
+      background: white;
+      width: 400px;
+      margin: 100px auto;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .container h2 { margin-bottom: 10px; }
+    .container p { font-size: 14px; color: #666; margin-bottom: 20px; }
+    .container input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .container button {
+      width: 100%;
+      padding: 12px;
+      background: #4b57d6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .container button:disabled {
+      background: #aaa;
+      cursor: not-allowed;
+    }
+
+    /* Teams-Lite UI (your second code) */
+    :root{
+      --bg:#0f1420; --panel:#151b2b; --panel-2:#1b2236; --text:#e6eaf2;
+      --muted:#9aa3b2; --accent:#5b6cff; --accent-2:#874bff;
+    }
+    #app{display:flex;height:100vh}
+    .sidebar{width:300px;background:var(--panel);padding:16px;border-right:1px solid #22283a;display:flex;flex-direction:column;gap:12px;color:var(--text)}
+    .brand{font-weight:700}
+    .me label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    .me input{width:100%;padding:10px;border-radius:10px;border:1px solid #263053;background:var(--panel-2);color:var(--text)}
+    .section{display:flex;flex-direction:column;gap:8px}
+    .section-header{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:13px}
+    .section-header button{background:var(--panel-2);border:1px solid #2a345a;color:var(--text);border-radius:8px;padding:4px 8px;cursor:pointer}
+    .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+    .item{padding:8px 10px;border-radius:8px;cursor:pointer;color:#c9d2e8}
+    .item:hover{background:#222a44;color:#fff}
+    .chat{flex:1;display:flex;flex-direction:column}
+    .chat-header{padding:12px 16px;border-bottom:1px solid #22283a;background:var(--panel);display:flex;flex-direction:column}
+    .title{font-weight:600}
+    .messages{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:10px}
+    .composer{display:flex;gap:8px;padding:12px;border-top:1px solid #22283a;background:var(--panel)}
+    #input{flex:1;resize:none;padding:12px;border-radius:12px;border:1px solid #2a345a;background:var(--panel-2);color:var(--text)}
+    #send{padding:10px 16px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));border:none;color:#fff;font-weight:600;cursor:pointer}
+    #send:disabled{opacity:.6;cursor:not-allowed}
+
+    /* Meeting modal */
+    #meeting {
+      display:none;
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:#0f1420; z-index:1000;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+    }
+    #meeting video { width: 40%; border-radius:12px; margin:10px; background:#000; }
+    #meeting button { margin-top:15px; padding:10px 16px; border-radius:10px; background:#5b6cff; color:#fff; border:none; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <!-- Landing Page -->
+  <div class="container" id="homePage">
+    <h2>Everyone together in Teams</h2>
+    <p>Stay connected and organised across work, school, and life.</p>
+    <button onclick="showJoinMeeting()">Join a meeting</button>
+  </div>
+
+  <!-- Join Meeting Page -->
+  <div class="container hidden" id="joinMeetingPage">
+    <h2>Join a meeting</h2>
+    <input type="text" id="meetingId" placeholder="Type a meeting ID" oninput="validateForm()">
+    <input type="text" id="meetingPass" placeholder="Type a meeting passcode (optional)">
+    <button id="joinBtn" disabled onclick="startTeamsLite()">Join meeting</button>
+    <br><br>
+    <button style="background:#eee; color:#333;" onclick="goBack()">← Back</button>
+  </div>
+
+  <!-- Teams-Lite UI -->
+  <div id="app" class="hidden">
+    <aside class="sidebar">
+      <div class="brand">Teams-Lite</div>
+      <div class="section">
+        <button id="joinMeetingBtn" style="padding:10px;border-radius:8px;background:#874bff;color:white;border:none;cursor:pointer">Join Video Call</button>
+      </div>
+    </aside>
+    <main class="chat">
+      <header class="chat-header">
+        <div class="title">#general</div>
+      </header>
+      <section id="messages" class="messages"></section>
+      <footer class="composer">
+        <textarea id="input" rows="1" placeholder="Message #general"></textarea>
+        <button id="send">Send</button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- Meeting Modal -->
+  <div id="meeting">
+    <video id="localVideo" autoplay playsinline muted></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+    <button id="leaveMeeting">Leave Meeting</button>
+  </div>
+
+<script>
+  // Page navigation
+  function showJoinMeeting() {
+    document.getElementById("homePage").classList.add("hidden");
+    document.getElementById("joinMeetingPage").classList.remove("hidden");
+  }
+  function goBack() {
+    document.getElementById("joinMeetingPage").classList.add("hidden");
+    document.getElementById("homePage").classList.remove("hidden");
+  }
+  function validateForm() {
+    const id = document.getElementById("meetingId").value.trim();
+    document.getElementById("joinBtn").disabled = (id === "");
+  }
+  function startTeamsLite() {
+    document.getElementById("joinMeetingPage").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+  }
+
+  // Meeting logic (WebRTC + BroadcastChannel)
+  const meetBtn = document.getElementById("joinMeetingBtn");
+  const meetingEl = document.getElementById("meeting");
+  const leaveBtn = document.getElementById("leaveMeeting");
+  const localVideo = document.getElementById("localVideo");
+  const remoteVideo = document.getElementById("remoteVideo");
+
+  let pc, localStream;
+  const bcMeet = new BroadcastChannel("teams-lite-meet");
+
+  meetBtn.onclick = async () => {
+    meetingEl.style.display = "flex";
+    localStream = await navigator.mediaDevices.getUserMedia({ video:true, audio:true });
+    localVideo.srcObject = localStream;
+
+    pc = new RTCPeerConnection();
+    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+    pc.ontrack = e => remoteVideo.srcObject = e.streams[0];
+
+    pc.onicecandidate = e => { if (e.candidate) bcMeet.postMessage({candidate:e.candidate}); };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    bcMeet.postMessage({offer});
+  };
+
+  leaveBtn.onclick = () => {
+    meetingEl.style.display = "none";
+    if (pc) pc.close();
+    if (localStream) localStream.getTracks().forEach(t => t.stop());
+  };
+
+  bcMeet.onmessage = async e => {
+    if (e.data.offer && !pc.currentRemoteDescription) {
+      await pc.setRemoteDescription(new RTCSessionDescription(e.data.offer));
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      bcMeet.postMessage({answer});
+    } else if (e.data.answer && !pc.currentRemoteDescription) {
+      await pc.setRemoteDescription(new RTCSessionDescription(e.data.answer));
+    } else if (e.data.candidate) {
+      try { await pc.addIceCandidate(new RTCIceCandidate(e.data.candidate)); } catch(err) { console.error(err); }
+    }
+  };
+</script>
+</body>
+</html>
